@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.InputMethodEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -138,6 +139,8 @@ public class ControladorPrincipal implements Initializable {
     public void importarCSV(ActionEvent actionEvent) {
     }
 
+    public void filtrarPorNombre(InputMethodEvent inputMethodEvent) {
+    }
     /**
      * Inicializa el controlador.
      * Configura la tabla y sus columnas para mostrar la información de las personas.

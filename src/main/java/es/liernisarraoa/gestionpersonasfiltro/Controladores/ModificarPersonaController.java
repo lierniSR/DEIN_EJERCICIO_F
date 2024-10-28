@@ -1,12 +1,20 @@
 package es.liernisarraoa.gestionpersonasfiltro.Controladores;
 
 import es.liernisarraoa.gestionpersonasfiltro.Modelo.Personas;
+import javafx.beans.InvalidationListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Controlador de la ventana modal de modificar persona.

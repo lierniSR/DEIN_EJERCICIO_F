@@ -1,6 +1,7 @@
 module es.liernisarraoa.gestionpersonasfiltro {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
     opens es.liernisarraoa.gestionpersonasfiltro.Modelo to javafx.fxml;
     exports es.liernisarraoa.gestionpersonasfiltro.Modelo;

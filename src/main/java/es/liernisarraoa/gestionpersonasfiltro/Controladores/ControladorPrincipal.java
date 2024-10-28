@@ -2,6 +2,8 @@ package es.liernisarraoa.gestionpersonasfiltro.Controladores;
 
 import es.liernisarraoa.gestionpersonasfiltro.GestionPersonas;
 import es.liernisarraoa.gestionpersonasfiltro.Modelo.Personas;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +13,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,6 +36,7 @@ public class ControladorPrincipal implements Initializable {
     private Scene sceneModificar;
     private Stage modalModificar;
     private Personas p;
+    private ObservableList<Personas> items = null;
 
     /** Tabla que muestra la lista de personas. */
     @FXML
@@ -48,6 +53,10 @@ public class ControladorPrincipal implements Initializable {
     /** Columna para mostrar la edad de la persona. */
     @FXML
     private TableColumn<Personas, Integer> columnaEdad;
+
+    /** TexField para el nombre del filtrado */
+    @FXML
+    private TextField nombreFiltradoTextField;
 
     /**
      * Maneja el evento de agregar una nueva persona.
@@ -76,6 +85,7 @@ public class ControladorPrincipal implements Initializable {
         modalAniadir.setTitle("Agregar Persona");
         modalAniadir.getIcons().add(new Image(String.valueOf(GestionPersonas.class.getResource("/Imagenes/agenda.png"))));
         modalAniadir.showAndWait();
+        items = tablaPersonas.getItems();
     }
 
     /**
@@ -107,6 +117,7 @@ public class ControladorPrincipal implements Initializable {
         modalModificar.setTitle("Modificar persona");
         modalModificar.getIcons().add(new Image(String.valueOf(GestionPersonas.class.getResource("/Imagenes/agenda.png"))));
         modalModificar.showAndWait();
+        items = tablaPersonas.getItems();
     }
 
     /**
@@ -119,6 +130,7 @@ public class ControladorPrincipal implements Initializable {
         Personas personaEliminar = tablaPersonas.getSelectionModel().getSelectedItem();
         tablaPersonas.getSelectionModel().clearSelection();
         tablaPersonas.getItems().remove(personaEliminar);
+        items = tablaPersonas.getItems();
         alertaEliminar();
     }
 
@@ -139,7 +151,30 @@ public class ControladorPrincipal implements Initializable {
     public void importarCSV(ActionEvent actionEvent) {
     }
 
-    public void filtrarPorNombre(InputMethodEvent inputMethodEvent) {
+    /**
+     * Maneja el evento de filtrar una persona de la tabla.
+     * Filtra el nombre de la persona introducida.
+     *
+     * @param keyEvent El evento que desencadena la acción.
+     */
+    public void filtrarPorNombre(KeyEvent keyEvent) {
+        if(keyEvent.getCode() == KeyCode.ENTER){
+            String nombreFiltrar = nombreFiltradoTextField.getText().trim();
+            ObservableList<Personas> itemsFilter = FXCollections.observableArrayList();
+            if(!nombreFiltrar.isEmpty()){
+                for(Personas p : items){
+                    if(p.getNombre().equalsIgnoreCase(nombreFiltrar)){
+                        itemsFilter.add(p);
+                    }
+                }
+                //Agregamos el observable list y limpiamos la tabla
+                tablaPersonas.getItems().removeAll();
+                tablaPersonas.setItems(itemsFilter);
+            } else {
+                tablaPersonas.getItems().removeAll();
+                tablaPersonas.setItems(items);
+            }
+        }
     }
     /**
      * Inicializa el controlador.
@@ -158,4 +193,5 @@ public class ControladorPrincipal implements Initializable {
         columnaApellido.prefWidthProperty().bind(tablaPersonas.widthProperty().multiply(0.4));
         columnaEdad.prefWidthProperty().bind(tablaPersonas.widthProperty().multiply(0.2));
     }
+
 }

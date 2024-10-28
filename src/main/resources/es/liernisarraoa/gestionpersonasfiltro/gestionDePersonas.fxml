@@ -28,7 +28,7 @@
             </HBox.margin>
          </Label>
          <!-- Campo de texto para ingresar el nombre -->
-         <TextField fx:id="nombreFiltradoTextField" maxHeight="-Infinity" maxWidth="-Infinity" onInputMethodTextChanged="#filtrarPorNombre" prefHeight="25.0" prefWidth="110.0" HBox.hgrow="ALWAYS">
+         <TextField fx:id="nombreFiltradoTextField" maxHeight="-Infinity" maxWidth="-Infinity" onKeyPressed="#filtrarPorNombre" prefHeight="25.0" prefWidth="110.0" HBox.hgrow="ALWAYS">
             <HBox.margin>
                <Insets left="20.0" right="20.0" top="20.0" />
             </HBox.margin>

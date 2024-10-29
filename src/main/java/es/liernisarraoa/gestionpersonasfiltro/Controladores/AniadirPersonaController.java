@@ -118,14 +118,6 @@ public class AniadirPersonaController {
     }
 
     /**
-     * Obtiene la persona que se ha agregado.
-     * @return La persona agregada o null si no se ha agregado ninguna.
-     */
-    public static Personas getPersonasAgregada(){
-        return personaAgregada;
-    }
-
-    /**
      * Establece la referencia a la tabla de personas de la ventana principal.
      * @param tabla La tabla de personas a la que se añadirán las nuevas personas.
      */

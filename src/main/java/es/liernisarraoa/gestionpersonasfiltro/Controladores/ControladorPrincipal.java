@@ -19,7 +19,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -153,10 +152,13 @@ public class ControladorPrincipal implements Initializable {
 
     /**
      * Muestra un cuadro de dialogo para seleccionar ruta donde querer guardar archivo CSV
+     *
+     * @param actionEvent
      */
     public void exportarCSV(ActionEvent actionEvent) {
         dialogoFicheroSave.setTitle("Guardar archivo");
         dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents"));
+        dialogoFicheroSave.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
         dialogoFicheroSave.setInitialFileName("personas"+cont+".csv");
         cont++;
         File file = dialogoFicheroSave.showSaveDialog(stagePrincipal);
@@ -171,6 +173,9 @@ public class ControladorPrincipal implements Initializable {
         }
     }
 
+    /**
+     * Genera el valor que contendra el archivo .CSV
+     */
     private String generarValorFichero() {
         String texto = "Nombre, Apellido, Edad\n";
         for(Personas p : items){
@@ -179,10 +184,16 @@ public class ControladorPrincipal implements Initializable {
         return texto;
     }
 
+    /**
+     * Este es el escuchador del Boton importar, que sale un dialogo para seleccionar archivo a importar.
+     *
+     * @param actionEvent
+     */
     public void importarCSV(ActionEvent actionEvent) {
         dialogoFicheroSave.setTitle("Abrir archivo");
-        File file = dialogoFicheroSave.showOpenDialog(stagePrincipal);
+        dialogoFicheroSave.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
         dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents")); //Esto lo hago para ahorrarme tiempo en la spruebas, en realidad no hace falta
+        File file = dialogoFicheroSave.showOpenDialog(stagePrincipal);
         if (file == null) {
             return;
         }
@@ -196,6 +207,11 @@ public class ControladorPrincipal implements Initializable {
         }
     }
 
+    /**
+     * Genera la lista y luego la añade a la tabla. La lista se genera con la informacion del CSV que se importa
+     *
+     * @param personas
+     */
     private void generarPersonasEnTabla(String[] personas) {
         items.removeAll();
         for(int i = 1; i < personas.length; i++){
@@ -249,6 +265,11 @@ public class ControladorPrincipal implements Initializable {
         columnaEdad.prefWidthProperty().bind(tablaPersonas.widthProperty().multiply(0.2));
     }
 
+    /**
+     * Asigna el valor stage que se pasa al atributo stagePrincipal de la clase ControladorPrincipal
+     *
+     * @param stage
+     */
     public static void setStagePrincipal(Stage stage){
         stagePrincipal = stage;
     }

@@ -157,7 +157,7 @@ public class ControladorPrincipal implements Initializable {
      */
     public void exportarCSV(ActionEvent actionEvent) {
         dialogoFicheroSave.setTitle("Guardar archivo");
-        dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents"));
+        dialogoFicheroSave.setInitialDirectory(new File("C:\\DM2\\DEIN\\ProyectosFX\\GestionPersonasFiltro"));
         dialogoFicheroSave.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
         dialogoFicheroSave.setInitialFileName("personas"+cont+".csv");
         cont++;
@@ -168,6 +168,7 @@ public class ControladorPrincipal implements Initializable {
         try {
             // Write the HTML contents to the file. Overwrite the existing file.
             Files.write(file.toPath(), generarValorFichero().getBytes());
+            alertaExportarCorrecto();
         }catch(IOException e) {
             e.printStackTrace();
         }
@@ -192,7 +193,7 @@ public class ControladorPrincipal implements Initializable {
     public void importarCSV(ActionEvent actionEvent) {
         dialogoFicheroSave.setTitle("Abrir archivo");
         dialogoFicheroSave.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
-        dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents")); //Esto lo hago para ahorrarme tiempo en la spruebas, en realidad no hace falta
+        dialogoFicheroSave.setInitialDirectory(new File("C:\\DM2\\DEIN\\ProyectosFX\\GestionPersonasFiltro")); //Esto lo hago para ahorrarme tiempo en la spruebas, en realidad no hace falta
         File file = dialogoFicheroSave.showOpenDialog(stagePrincipal);
         if (file == null) {
             return;
@@ -202,9 +203,32 @@ public class ControladorPrincipal implements Initializable {
             byte[] resume = Files.readAllBytes(file.toPath());
             String[] personas = new String(resume).split("\n");
             generarPersonasEnTabla(personas);
+            alertaImportarCorrecto();
         }catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Muestra una alerta informando que la exportacion ha sido correcta.
+     */
+    private void alertaExportarCorrecto() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Archivo exportado");
+        alert.setContentText("El archivo CSV se ha guardado correctamente.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Muestra una alerta informando que la importacion ha sido correcta.
+     */
+    private void alertaImportarCorrecto() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Archivo importado");
+        alert.setContentText("El archivo CSV se ha cargado correctamente.");
+        alert.showAndWait();
     }
 
     /**
@@ -213,13 +237,25 @@ public class ControladorPrincipal implements Initializable {
      * @param personas
      */
     private void generarPersonasEnTabla(String[] personas) {
-        items.removeAll();
         for(int i = 1; i < personas.length; i++){
             String[] persona = personas[i].split(",");
-            items.add(new Personas(persona[0], persona[1], Integer.parseInt(persona[2])));
+            Personas p = new Personas(persona[0], persona[1], Integer.parseInt(persona[2]));
+            if(items.contains(p)){
+                alertaErrorExportar(p);
+            } else{
+                items.add(new Personas(persona[0], persona[1], Integer.parseInt(persona[2])));
+            }
         }
         tablaPersonas.getItems().removeAll();
         tablaPersonas.setItems(items);
+    }
+
+    private void alertaErrorExportar(Personas p) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(null);
+        alert.setTitle("Persona no añadida");
+        alert.setContentText("La siguiente persona no se ha podido exportar:\n" + p.getNombre() + "\n" + p.getApellido() + "\n" + p.getEdad());
+        alert.showAndWait();
     }
 
     /**

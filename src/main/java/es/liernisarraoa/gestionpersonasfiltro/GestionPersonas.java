@@ -1,5 +1,6 @@
 package es.liernisarraoa.gestionpersonasfiltro;
 
+import es.liernisarraoa.gestionpersonasfiltro.Controladores.ControladorPrincipal;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -42,6 +43,9 @@ public class GestionPersonas extends Application {
 
         // Muestra la ventana
         stage.show();
+
+        //Pasar al controlador la escena principal
+        ControladorPrincipal.setStagePrincipal(stage);
     }
 
     /**

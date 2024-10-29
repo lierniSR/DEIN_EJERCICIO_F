@@ -15,12 +15,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 /**
@@ -35,8 +38,11 @@ public class ControladorPrincipal implements Initializable {
     private Stage modalAniadir;
     private Scene sceneModificar;
     private Stage modalModificar;
+    private static Stage stagePrincipal;
     private Personas p;
-    private ObservableList<Personas> items = null;
+    private ObservableList<Personas> items = FXCollections.observableArrayList();
+    private FileChooser dialogoFicheroSave = new FileChooser();
+    private int cont = 1;
 
     /** Tabla que muestra la lista de personas. */
     @FXML
@@ -145,10 +151,59 @@ public class ControladorPrincipal implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Muestra un cuadro de dialogo para seleccionar ruta donde querer guardar archivo CSV
+     */
     public void exportarCSV(ActionEvent actionEvent) {
+        dialogoFicheroSave.setTitle("Guardar archivo");
+        dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents"));
+        dialogoFicheroSave.setInitialFileName("personas"+cont+".csv");
+        cont++;
+        File file = dialogoFicheroSave.showSaveDialog(stagePrincipal);
+        if (file == null) {
+            return;
+        }
+        try {
+            // Write the HTML contents to the file. Overwrite the existing file.
+            Files.write(file.toPath(), generarValorFichero().getBytes());
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String generarValorFichero() {
+        String texto = "Nombre, Apellido, Edad\n";
+        for(Personas p : items){
+            texto += p.getNombre() + "," + p.getApellido() + "," + p.getEdad() + "\n";
+        }
+        return texto;
     }
 
     public void importarCSV(ActionEvent actionEvent) {
+        dialogoFicheroSave.setTitle("Abrir archivo");
+        File file = dialogoFicheroSave.showOpenDialog(stagePrincipal);
+        dialogoFicheroSave.setInitialDirectory(new File("C:\\Users\\Liliaam\\Documents")); //Esto lo hago para ahorrarme tiempo en la spruebas, en realidad no hace falta
+        if (file == null) {
+            return;
+        }
+        try {
+            // Read the file and populate the HTMLEditor
+            byte[] resume = Files.readAllBytes(file.toPath());
+            String[] personas = new String(resume).split("\n");
+            generarPersonasEnTabla(personas);
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generarPersonasEnTabla(String[] personas) {
+        items.removeAll();
+        for(int i = 1; i < personas.length; i++){
+            String[] persona = personas[i].split(",");
+            items.add(new Personas(persona[0], persona[1], Integer.parseInt(persona[2])));
+        }
+        tablaPersonas.getItems().removeAll();
+        tablaPersonas.setItems(items);
     }
 
     /**
@@ -194,4 +249,7 @@ public class ControladorPrincipal implements Initializable {
         columnaEdad.prefWidthProperty().bind(tablaPersonas.widthProperty().multiply(0.2));
     }
 
+    public static void setStagePrincipal(Stage stage){
+        stagePrincipal = stage;
+    }
 }

@@ -49,7 +49,7 @@ public class GestionPersonas extends Application {
     }
 
     /**
-     * Método principal que lanza la aplicación JavaFX.
+     * Metodo principal que lanza la aplicación JavaFX.
      *
      * @param args Argumentos de línea de comandos (no se utilizan en este caso).
      */
